@@ -1,0 +1,46 @@
+  <head>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+    <body>
+  <div class="layout-container">
+  <section><h1 align="center">
+    Gator
+</h1>
+<p align="center">Batch SQL Query runner for Postgres</p>
+<p>I deal with moving psql dump files and sql data insertion files around a lot.
+It's mostly to seed data when a new developer joins the company and each of
+them have a different tool/GUI for handling postgres and not all of them support
+running each query separately. This creates an issue when the export of data by most
+apps is done in an alphabetical manner and so foreign key issues are bound to exist.</p>
+<p>Gator simplifies my work by separating each query into it's own execution context and
+running each query about 10 times. This makes sure that all dependent queries are run and if there's still errors, you'll see them in the terminal.</p>
+<p><strong>NOTE:</strong> Gator, is a personal project which I wasn't build for the public but the source code is here cause there's nothing to &quot;close source&quot; here.</p>
+<h2>Install</h2>
+<p>Like everything else that I've written in go, the <a href="https://github.com/barelyhuman/releases">releases</a> page has binaries for common Unix systems.</p>
+<p>For other *nix systems, I'd recommend building from source since the library depends on
+<a href="https://github.com/pganalyze/pg_query_go">pg_query_go</a> and cross compiling for each
+operating system isn't feasible right now. You are free to Raise PR's for adding build scripts for your particular system.</p>
+<h2>Usage</h2>
+<pre><code class="language-sh">Usage of gator:
+  -db string
+        database name to run the file against (default &quot;postgres&quot;)
+  -file string
+        sql file to run
+  -host string
+        host address (default &quot;localhost&quot;)
+  -password string
+        password for authentication
+  -port int
+        port to connect (default 5432)
+  -user string
+        user for authentication (default &quot;postgres&quot;)
+</code></pre>
+<h2>License</h2>
+<p><a href="https://github.com/barelyhuman/gator/blob/dev/license">MIT</a> | <a href="https://github.com/barelyhuman">Reaper</a></p>
+</section></div>
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.5.1/highlight.min.js"></script>
+  <script>
+    hljs.highlightAll();
+  </script>
+  </body>
+  
