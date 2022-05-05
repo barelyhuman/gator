@@ -27,9 +27,11 @@ jobs:
       - name: Archive
         run: |
           cd builds/github.com/barelyhuman
+          cp ../../../license .
+          cp ../../../readme.md .
           for file in $(ls *);
           do 
-              tar cfzv "$file".tgz $file
+              tar cfzv "$file".tgz $file license readme.md
               rm -rf $file
           done
           cd ../../..
