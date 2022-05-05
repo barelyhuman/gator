@@ -27,17 +27,17 @@ operating system isn't feasible right now. You are free to Raise PR's for adding
 ```sh
 Usage of gator:
   -db string
-        sql file to run (default "postgres")
+        database name to run the file against (default "postgres")
   -file string
         sql file to run
   -host string
-        sql file to run (default "localhost")
+        host address (default "localhost")
   -password string
-        sql file to run
+        password for authentication
   -port int
-        sql file to run (default 5432)
+        port to connect (default 5432)
   -user string
-        sql file to run (default "postgres")
+        user for authentication (default "postgres")
 ```
 
 ## License

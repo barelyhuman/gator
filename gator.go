@@ -139,11 +139,11 @@ var appState *AppState
 func cli() {
 	appState = &AppState{}
 	inputFile := flag.String("file", "", "sql file to run")
-	host := flag.String("host", "localhost", "sql file to run")
-	port := flag.Int64("port", 5432, "sql file to run")
-	user := flag.String("user", "postgres", "sql file to run")
-	password := flag.String("password", "", "sql file to run")
-	dbName := flag.String("db", "postgres", "sql file to run")
+	host := flag.String("host", "localhost", "host address")
+	port := flag.Int64("port", 5432, "port to connect")
+	user := flag.String("user", "postgres", "user for authentication")
+	password := flag.String("password", "", "password for authentication")
+	dbName := flag.String("db", "postgres", "database name to run the file against")
 	flag.Parse()
 
 	appState.Input = *inputFile
