@@ -42,4 +42,4 @@ Usage of gator:
 
 ## License
 
-[MIT](/license) | [Reaper](https://github.com/barelyhuman)
+[MIT](https://github.com/barelyhuman/gator/blob/dev/license) | [Reaper](https://github.com/barelyhuman)
