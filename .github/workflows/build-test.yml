@@ -17,18 +17,27 @@ jobs:
         with:
           xgo_version: latest
           go_version: 1.18
-          dest: build
+          dest: builds
           targets: windows/386,windows/amd64,linux/amd64,linux/arm64,darwin/arm64,darwin/amd64
           v: true
           x: false
           race: false
           ldflags: -s -w
           buildmode: default
+      - name: Archive
+        run: |
+          cd builds/github.com/barelyhuman
+          for file in $(ls *);
+          do 
+              tar cfzv "$file".tgz $file
+              rm -rf $file
+          done
+          cd ../../..
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GH_TOKEN }}
-          file: build/*
+          file: builds/github.com/barelyhuman/*.tgz
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
