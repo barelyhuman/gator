@@ -1,4 +1,4 @@
-#!/usr/bin/env
+#!/usr/bin/env bash
 
 mkdir -p docs 
 cp ./readme.md ./docs/index.md
