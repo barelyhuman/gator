@@ -3,16 +3,17 @@
 </h1>
 <p align="center">Batch SQL Query runner for Postgres</p>
 
-I deal with moving psql dump files and sql data insertion files around a lot.
-It's mostly to seed data when a new developer joins the company and each of
-them have a different tool/GUI for handling postgres and not all of them support
-running each query separately. This creates an issue when the export of data by most
-apps is done in an alphabetical manner and so foreign key issues are bound to exist.
+Having new developers setup their databases is a common thing for me to handle and this has a lot of friction due to the
+existing tools that devs use, some have TablePlus, some have postico and then there's other web based solutions as well.
+
+Most of these export the data in an alphabetical order or in a foreign key dependency order. The 2nd one normally works fine
+with having to just run the errored out queries once more. The issue is that not all these tools offer a way to skip errors
+on queries and just run the next query. Which, is necessary when you are dealing with alphabetical(table name) order based data exports.
 
 Gator simplifies my work by separating each query into it's own execution context and
-running each query about 10 times. This makes sure that all dependent queries are run and if there's still errors, you'll see them in the terminal.
+running each query about 10 times (if it fails). This makes sure that all dependent queries are run and if there's still errors, you'll see them in the terminal.
 
-**NOTE:** Gator, is a personal project which I wasn't build for the public but the source code is here cause there's nothing to "close source" here.
+**NOTE:** Gator, is a personal project which wasn't build for the public but the source code is here cause there's nothing to "close source"
 
 ## Install
 
