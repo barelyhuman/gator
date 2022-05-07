@@ -12,12 +12,14 @@ import (
 )
 
 type AppState struct {
-	Input    string
-	Host     string
-	Port     int64
-	User     string
-	Password string
-	DBName   string
+	Input         string
+	Host          string
+	Port          int64
+	User          string
+	Password      string
+	DBName        string
+	SyncSequences bool
+	DBConnection  *sql.DB
 }
 
 type GatorQuery struct {
@@ -37,29 +39,31 @@ func (app *AppState) connectionString() string {
 		app.User, app.Password, app.Host, app.Port, app.DBName)
 }
 
-func hasString(seq []string, key string) bool {
-	for _, item := range seq {
-		if item != key {
-			continue
-		}
-		return true
-	}
-	return false
+func (app *AppState) connectDB() {
+	fmt.Println("Connecting with the following Creds")
+	fmt.Printf("Host:%s\n Port:%d\n Database:%s User:%s\n",
+		appState.Host,
+		appState.Port,
+		appState.DBName,
+		appState.User,
+	)
+	db, err := sql.Open("postgres", appState.connectionString())
+	bail(err)
+	fmt.Println("Checking connection to db...")
+	err = db.Ping()
+	bail(err)
+	fmt.Println("Connected")
+	app.DBConnection = db
+}
+
+func (app *AppState) syncSequences() {
+	fmt.Println("Syncing Sequences")
+	_, err := app.DBConnection.Exec("DO $$ DECLARE i TEXT; BEGIN FOR i IN (select table_name from information_schema.tables where table_catalog='YOUR_DATABASE_NAME' and table_schema='public') LOOP EXECUTE 'Select setval('''||i||'id_seq'', (SELECT max(id) as a FROM ' || i ||')+1);'; END LOOP; END$$;")
+	bail(err)
+	fmt.Println("Synced")
 }
 
 func (app *AppState) executeQueries(queries []GatorQuery) {
-	log.Println(app.connectionString())
-	db, err := sql.Open("postgres", appState.connectionString())
-	bail(err)
-	defer db.Close()
-
-	fmt.Println("Checking connection to db...")
-
-	err = db.Ping()
-	bail(err)
-
-	fmt.Println("Connected")
-
 	fmt.Println("Executing Queries")
 
 	var toExecQueries []GatorQuery = queries
@@ -70,7 +74,7 @@ func (app *AppState) executeQueries(queries []GatorQuery) {
 				continue
 			}
 
-			_, err := db.Exec(toExecQueries[queryIndex].query)
+			_, err := app.DBConnection.Exec(toExecQueries[queryIndex].query)
 			if err != nil {
 				toExecQueries[queryIndex].err = err
 			} else {
@@ -101,10 +105,8 @@ func (app *AppState) executeQueries(queries []GatorQuery) {
 
 }
 
-func (app *AppState) Gator() {
-
+func (app *AppState) runSeedFile() {
 	var queriesToExec []GatorQuery
-
 	fileData, err := os.ReadFile(app.Input)
 	bail(err)
 
@@ -129,9 +131,25 @@ func (app *AppState) Gator() {
 		})
 	}
 
-	// log.Println(queriesToExec[0])
+	app.executeQueries(queriesToExec)
+}
 
-	appState.executeQueries(queriesToExec)
+func (app *AppState) Gator() {
+
+	app.connectDB()
+
+	if app.DBConnection != nil {
+		defer app.DBConnection.Close()
+	}
+
+	if len(app.Input) > 0 {
+		app.runSeedFile()
+	}
+
+	if app.SyncSequences {
+		app.syncSequences()
+	}
+
 }
 
 var appState *AppState
@@ -139,6 +157,7 @@ var appState *AppState
 func cli() {
 	appState = &AppState{}
 	inputFile := flag.String("file", "", "sql file to run")
+	syncSequences := flag.Bool("sync-sequences", false, "Sync Sequences")
 	host := flag.String("host", "localhost", "host address")
 	port := flag.Int64("port", 5432, "port to connect")
 	user := flag.String("user", "postgres", "user for authentication")
@@ -150,6 +169,7 @@ func cli() {
 	appState.Host = *host
 	appState.Port = *port
 	appState.User = *user
+	appState.SyncSequences = *syncSequences
 	appState.Password = *password
 	appState.DBName = *dbName
 }
