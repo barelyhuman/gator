@@ -37,6 +37,8 @@ Usage of gator:
         password for authentication
   -port int
         port to connect (default 5432)
+  -sync-sequences
+        Sync Sequences (added in v0.2.0)
   -user string
         user for authentication (default "postgres")
 ```
