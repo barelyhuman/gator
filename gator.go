@@ -58,7 +58,7 @@ func (app *AppState) connectDB() {
 
 func (app *AppState) syncSequences() {
 	fmt.Println("Syncing Sequences")
-	_, err := app.DBConnection.Exec("DO $$ DECLARE i TEXT; BEGIN FOR i IN (select table_name from information_schema.tables where table_catalog='YOUR_DATABASE_NAME' and table_schema='public') LOOP EXECUTE 'Select setval('''||i||'id_seq'', (SELECT max(id) as a FROM ' || i ||')+1);'; END LOOP; END$$;")
+	_, err := app.DBConnection.Exec("DO $$ DECLARE i TEXT; BEGIN FOR i IN (select table_name from information_schema.tables where table_catalog='" + appState.DBName + "' and table_schema='public') LOOP EXECUTE 'Select setval('''||i||'id_seq'', (SELECT max(id) as a FROM ' || i ||')+1);'; END LOOP; END$$;")
 	bail(err)
 	fmt.Println("Synced")
 }
